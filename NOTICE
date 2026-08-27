@@ -1,0 +1,25 @@
+# Notices
+
+## Morse Runner Web
+
+Licensed under the MIT License. See `LICENSE`.
+
+## Upstream project
+
+This is an independent TypeScript implementation inspired by Alex Shovkoplyas, VE3NEA's MorseRunner. The upstream project is available under MPL-2.0:
+
+https://github.com/VE3NEA/MorseRunner
+
+No source code from the upstream repository is included in or bundled with this project.
+
+## Community Edition features
+
+Contest-mode compatibility and call-history import behavior were designed for files used by MorseRunner Community Edition. No Community Edition source or user data is redistributed here.
+
+## Runtime user data
+
+Users may import files such as `MASTER.DTA` and N1MM-style call histories. These files remain in the user's browser, are not part of this repository, and remain the responsibility of the user.
+
+## Third-party packages
+
+Dependencies are listed in `package.json`. Their licenses are distributed with their packages.
