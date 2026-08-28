@@ -24,16 +24,16 @@ export function PwaUpdatePrompt() {
   const showUpdateFirst = showUpdate || showOffline;
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-50 rounded-lg border border-emerald-700 bg-slate-900/95 p-3 shadow-xl backdrop-blur sm:left-auto sm:right-3 sm:w-96">
+    <div className="panel fixed inset-x-3 bottom-3 z-50 p-3 sm:left-auto sm:right-3 sm:w-96">
       <p className="text-sm text-slate-200">{showUpdateFirst ? t('pwaUpdateReady') : t('pwaOfflineReady')}</p>
       {showUpdate ? (
         <div className="mt-3 flex gap-2">
-          <button type="button" onClick={() => void updateServiceWorker(true)} className="flex-1 rounded bg-emerald-600 px-3 py-2 text-sm font-medium hover:bg-emerald-500">{t('pwaReload')}</button>
-          <button type="button" onClick={() => setDismissedUpdate(true)} className="rounded border border-slate-700 px-3 py-2 text-sm hover:bg-slate-800">{t('pwaLater')}</button>
+          <button type="button" onClick={() => void updateServiceWorker(true)} className="btn btn-primary flex-1 px-3 py-2 text-xs">{t('pwaReload')}</button>
+          <button type="button" onClick={() => setDismissedUpdate(true)} className="btn px-3 py-2 text-xs">{t('pwaLater')}</button>
         </div>
       ) : (
         <div className="mt-3 flex justify-end">
-          <button type="button" onClick={() => setDismissedOffline(true)} className="rounded border border-slate-700 px-3 py-2 text-sm hover:bg-slate-800">{t('pwaClose')}</button>
+          <button type="button" onClick={() => setDismissedOffline(true)} className="btn px-3 py-2 text-xs">{t('pwaClose')}</button>
         </div>
       )}
     </div>

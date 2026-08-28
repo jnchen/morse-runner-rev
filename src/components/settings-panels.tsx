@@ -29,19 +29,22 @@ export function StationPanel({ settings, volume, onSettingsChange, onVolumeChang
   const { t } = useTranslation();
 
   return (
-    <section className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-      <h2 className="mb-3 font-semibold">{t('station')}</h2>
+    <section className="panel">
+      <header className="panel-header">
+        <h2 className="panel-title">{t('station')}</h2>
+      </header>
+      <div className="panel-body space-y-3">
       <label className="block text-sm">
         {t('callsign')}
         <input
           value={settings.call}
           autoCapitalize="characters"
           onChange={(event) => onSettingsChange({ call: event.target.value.toUpperCase().replace(/[^A-Z0-9/]/g, '') })}
-          className="mt-1 w-full rounded bg-slate-950 px-3 py-2 font-mono uppercase"
+          className="control-input mt-1 h-9 px-2.5 font-mono text-xs uppercase"
         />
       </label>
       {NUMERIC_SETTINGS.map(({ key, labelKey, unit, min, max, step }) => (
-        <div className="mt-3" key={key}>
+        <div key={key}>
           <Range
             label={t(labelKey)}
             value={`${settings[key]} ${unit}`}
@@ -53,7 +56,7 @@ export function StationPanel({ settings, volume, onSettingsChange, onVolumeChang
           />
         </div>
       ))}
-      <div className="mt-3">
+      <div>
         <Range
           label={t('volume')}
           value={`${Math.round(volume * 100)}%`}
@@ -62,6 +65,7 @@ export function StationPanel({ settings, volume, onSettingsChange, onVolumeChang
           current={Math.round(volume * 100)}
           onChange={(value) => onVolumeChange(value / 100)}
         />
+      </div>
       </div>
     </section>
   );
@@ -81,27 +85,31 @@ export function ContestSettingsPanel({
   const { t } = useTranslation();
 
   return (
-    <section className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-      <h2 className="mb-3 font-semibold">{t('contest')}</h2>
+    <section className="panel">
+      <header className="panel-header">
+        <h2 className="panel-title">{t('contest')}</h2>
+      </header>
+      <div className="panel-body space-y-3">
       <label className="block text-sm">
         {t('contestType')}
         <select
           value={contest}
           onChange={(event) => onContestChange(event.target.value as ContestId)}
-          className="mt-1 w-full rounded bg-slate-950 px-3 py-2 text-sm"
+          className="control-input mt-1 h-9 px-2.5 text-xs"
         >
           {CONTEST_LIST.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
         </select>
       </label>
-      <div className="mt-3"><Range label={t('activity')} value={String(settings.activity)} min={1} max={20} current={settings.activity} onChange={(value) => onSettingsChange({ activity: value })} /></div>
-      <div className="mt-3"><Range label={t('duration')} value={`${settings.duration} min`} min={1} max={120} current={settings.duration} onChange={(value) => onSettingsChange({ duration: value })} /></div>
-      <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+      <div><Range label={t('activity')} value={String(settings.activity)} min={1} max={20} current={settings.activity} onChange={(value) => onSettingsChange({ activity: value })} /></div>
+      <div><Range label={t('duration')} value={`${settings.duration} min`} min={1} max={120} current={settings.duration} onChange={(value) => onSettingsChange({ duration: value })} /></div>
+      <div className="grid grid-cols-2 gap-1.5">
         {(['qsk', 'qrn', 'qrm', 'qsb', 'flutter', 'lids'] as const).map((key) => (
-          <label key={key} className="flex items-center gap-2 rounded border border-slate-800 px-2 py-1">
+          <label key={key} className="setting-check flex min-h-9 cursor-pointer items-center gap-2 rounded border border-slate-800 bg-black/30 px-2 text-[11px] text-slate-300 transition-colors hover:border-slate-700 hover:text-slate-100">
             <input type="checkbox" checked={settings[key]} onChange={(event) => onSettingsChange({ [key]: event.target.checked } as Partial<UserSettings>)} />
             {t(key)}
           </label>
         ))}
+      </div>
       </div>
     </section>
   );

@@ -22,18 +22,18 @@ export function MobileActionBar({
     { label: t('sendHisCall'), action: onHisCall },
     { label: 'NIL', action: onNil },
     { label: 'AGN', action: onAgn },
-    { label: t('abort'), action: onAbort },
+    { label: t('abort'), action: onAbort, danger: true },
   ];
 
   return (
-    <div className="sticky bottom-0 z-10 border-t border-slate-800 bg-slate-950/95 p-2 backdrop-blur lg:hidden">
-      <div className="grid grid-cols-4 gap-2">
-        {actions.map(({ label, action, primary }) => (
+    <div className="sticky bottom-0 z-20 border-t border-slate-800 bg-[#04060a]/97 p-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
+      <div className="grid grid-cols-3 gap-2">
+        {actions.map(({ label, action, primary, danger }) => (
           <button
             key={label}
             type="button"
             onClick={action}
-            className={`rounded px-2 py-3 text-sm font-medium ${primary ? 'bg-emerald-600 hover:bg-emerald-500' : 'border border-slate-700 bg-slate-900 hover:bg-slate-800'} ${label === t('abort') ? 'col-span-4' : ''}`}
+            className={`btn min-h-11 px-2 text-[11px] ${primary ? 'btn-primary' : ''} ${danger ? 'btn-danger col-span-3' : ''}`}
           >
             {label}
           </button>
