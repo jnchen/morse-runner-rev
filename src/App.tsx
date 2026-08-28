@@ -309,23 +309,19 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen text-slate-100" onKeyDown={onFormKeyDown}>
-      <header className="sticky top-0 z-30 border-b border-[#172232]/90 bg-[#04060a]/95 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-[1500px] items-center justify-between gap-3 px-3 sm:px-5">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-md border border-emerald-400/35 bg-emerald-950/60 font-mono text-lg font-bold text-emerald-300 shadow-[0_0_22px_rgba(67,242,165,0.16)]">M</span>
-            <div className="min-w-0">
-              <h1 className="truncate text-[13px] font-bold tracking-[0.015em] text-slate-100 sm:text-sm">{t('title')}</h1>
-              <p className="truncate text-[10px] uppercase tracking-[0.08em] text-slate-500">{t('subtitle')}</p>
-            </div>
+    <div className="min-h-screen bg-slate-950 text-slate-100" onKeyDown={onFormKeyDown}>
+      <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/95 px-4 py-3 backdrop-blur sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-lg font-semibold sm:text-xl">{t('title')}</h1>
+            <p className="text-xs text-slate-400 sm:text-sm">{t('subtitle')}</p>
           </div>
           <div className="flex items-center gap-2">
-            <span className={`status-pill ${running ? 'status-pill-live' : ''}`}>
-              <span className={`size-1.5 rounded-full ${running ? 'bg-emerald-400 shadow-[0_0_8px_#43f2a5]' : 'bg-slate-600'}`} />
-              {running ? t(engine.runMode) : t('idle')}
+            <span className={`rounded px-2 py-1 text-xs ${running ? 'bg-emerald-600' : 'bg-slate-800 text-slate-400'}`}>
+              {running ? `${t(engine.runMode)} · ${pileup}` : t('idle')}
             </span>
-            <select aria-label={t('language')} value={i18n.language.slice(0, 2)} onChange={(e) => { const language = e.target.value; void i18n.changeLanguage(language); setSettings({ language }); }} className="control-input h-[1.7rem] w-auto px-2 text-xs">
-              <option value="en">EN</option>
+            <select aria-label={t('language')} value={i18n.language.slice(0, 2)} onChange={(e) => { const language = e.target.value; void i18n.changeLanguage(language); setSettings({ language }); }} className="rounded border border-slate-700 bg-slate-900 px-2 py-1 text-sm">
+              <option value="en">English</option>
               <option value="zh">中文</option>
               <option value="ja">日本語</option>
             </select>
@@ -333,39 +329,23 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-[1500px] gap-3 p-3 pb-24 sm:p-4 lg:grid-cols-[minmax(0,1fr)_340px] lg:pb-4">
-        <section className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2" data-testid="run-mode-bar">
-            <div className="segmented min-w-full flex-1 sm:min-w-0">
-              {MODES.map((mode) => (
-                <button key={mode} disabled={running} onClick={() => void startRun(mode)} className={`segment-button ${engine.runMode === mode ? 'segment-active' : ''}`}>
-                  {t(mode)}
-                </button>
-              ))}
-            </div>
-            {running && <button onClick={stopRun} className="btn btn-danger min-h-9 px-4 text-xs">{t('stop')}</button>}
+      <main className="mx-auto grid max-w-7xl gap-4 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <section className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {MODES.map((mode) => (
+              <button key={mode} disabled={running} onClick={() => void startRun(mode)} className="rounded bg-emerald-600 px-3 py-2 text-sm font-medium transition hover:bg-emerald-500 disabled:opacity-40">
+                {t(mode)}
+              </button>
+            ))}
+            {running && <button onClick={stopRun} className="rounded bg-red-600 px-3 py-2 text-sm font-medium hover:bg-red-500">{t('stop')}</button>}
           </div>
 
-          <div className="operator-console p-3">
-            <div className="stat-strip mb-3">
-              <div className="stat-cell">
-                <span className="stat-label">{t('time')}</span>
-                <span className="stat-value stat-value-primary">{new Date(elapsed * 1000).toISOString().substring(11, 19)}</span>
-              </div>
-              <div className="stat-cell">
-                <span className="stat-label">{t('qsoCount')}</span>
-                <span className="stat-value">{qsoList.length}</span>
-              </div>
-              <div className="stat-cell">
-                <span className="stat-label">{t('pileupCount')}</span>
-                <span className="stat-value">{pileup}</span>
-              </div>
-              <div className="stat-cell">
-                <span className="stat-label">{t('score')}</span>
-                <span className="stat-value">{stats.score}{engine.runMode !== 'hst' && <small className="ml-1 text-[10px] text-slate-500">{`(${stats.points}×${stats.multipliers})`}</small>}</span>
-              </div>
+          <div className="rounded-lg border border-slate-800 bg-slate-900 p-3 shadow sm:p-4">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-400">
+              <span className="font-mono">{new Date(elapsed * 1000).toISOString().substring(11, 19)}</span>
+              <TrainingResults contest={contestDefinition} settings={settings} qsos={qsoList} startedAt={startedAtRef.current} />
+              <span>{t('score')}: <b className="text-slate-100">{stats.score}</b>{engine.runMode !== 'hst' && ` (${stats.points} × ${stats.multipliers})`}</span>
             </div>
-
             <ExchangeInput
               contestDefinition={contestDefinition}
               call={call}
@@ -387,27 +367,18 @@ export default function App() {
                 callSent.current = nrSent.current = false;
               }}
             />
-
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-              <p className="text-[11px] leading-relaxed text-slate-500">{running ? t('keyboardHint') : t('startHint')}</p>
-              <TrainingResults contest={contestDefinition} settings={settings} qsos={qsoList} startedAt={startedAtRef.current} />
-            </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-            {[['F1', 'CQ', sendCq], ['F2', 'NR', sendNr], ['F3', 'TU', sendTu], ['F5', 'HIS', sendHisCall], ['F8', 'NIL', () => engine.send('nil')], ['F9', 'AGN', () => engine.send('agn')]].map(([key, label, action]) => (
-              <button key={key as string} onClick={action as () => void} className="btn message-key">
-                <small>{key as string}</small>
-                <strong>{label as string}</strong>
-              </button>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+            {[['F1 · CQ', sendCq], ['F2 · NR', sendNr], ['F3 · TU', sendTu], ['F5 · HIS', sendHisCall], ['F8 · NIL', () => engine.send('nil')], ['F9 · AGN', () => engine.send('agn')]].map(([label, action]) => (
+              <button key={label as string} onClick={action as () => void} className="rounded border border-slate-800 bg-slate-900 px-3 py-2 text-sm hover:bg-slate-800">{label as string}</button>
             ))}
           </div>
 
           <QsoLog contestDefinition={contestDefinition} qsos={qsoList} />
-
         </section>
 
-        <aside className="space-y-3">
+        <aside className="space-y-4">
           <StationPanel settings={settings} volume={volume} onSettingsChange={setSettings} onVolumeChange={setVolume} />
           <ContestSettingsPanel
             settings={settings}
@@ -427,7 +398,7 @@ export default function App() {
           />
           <TrainingHistory results={history} onRestore={restoreTrainingResult} onClear={clearTrainingHistory} />
         </aside>
-      </main>
+            </main>
       <MobileActionBar
         onCq={sendCq}
         onExchange={() => { if (!callSent.current) sendHisCall(); sendNr(); }}
@@ -447,3 +418,4 @@ function eventModifiers() {
   const event = window.event as MouseEvent | undefined;
   return !!event?.ctrlKey || !!event?.shiftKey || !!event?.altKey;
 }
+

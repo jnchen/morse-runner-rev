@@ -13,39 +13,33 @@ export function QsoLog({ contestDefinition, qsos }: QsoLogProps) {
   const field2 = contestDefinition.fields[1];
 
   return (
-    <section className="panel">
-      <header className="panel-header">
-        <h2 className="panel-title">{t('log')}</h2>
-        <span className="font-mono text-[11px] text-slate-500">{qsos.length} QSO</span>
-      </header>
-      <div className="max-h-[400px] overflow-auto">
-        <table className="log-table text-left text-xs">
-          <thead className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
-            <tr>
-              <th className="text-left">UTC</th>
-              <th className="text-left">{t('call')}</th>
-              <th className="text-left">{t(field1?.labelKey ?? 'exchange')}</th>
-              <th className="text-left">{t(field2?.labelKey ?? 'exchange')}</th>
-              <th className="text-left">PFX</th>
-              <th className="text-right">CHK</th>
+    <div className="overflow-x-auto rounded-lg border border-slate-800">
+      <table className="w-full min-w-[520px] text-left text-sm">
+        <thead className="bg-slate-900 text-xs uppercase tracking-wide text-slate-400">
+          <tr>
+            <th className="p-2">UTC</th>
+            <th>{t('call')}</th>
+            <th>{t(field1?.labelKey ?? 'exchange')}</th>
+            <th>{t(field2?.labelKey ?? 'exchange')}</th>
+            <th>PFX</th>
+            <th>CHK</th>
+          </tr>
+        </thead>
+        <tbody className="font-mono">
+          {qsos.length === 0 ? (
+            <tr><td colSpan={6} className="p-6 text-center text-slate-500">{t('emptyLog')}</td></tr>
+          ) : qsos.map((qso, index) => (
+            <tr key={`${qso.time}-${index}`} className="border-t border-slate-800 odd:bg-slate-900/40">
+              <td className="p-2">{new Date(qso.time * 1000).toISOString().substring(11, 19)}</td>
+              <td>{qso.call}</td>
+              <td>{qso.exch1}</td>
+              <td>{qso.exch2}</td>
+              <td>{qso.pfx}</td>
+              <td className={qso.err === '   ' ? 'text-emerald-400' : 'text-red-400'}>{qso.err.trim()}</td>
             </tr>
-          </thead>
-          <tbody className="font-mono">
-            {qsos.length === 0 ? (
-              <tr><td colSpan={6} className="py-7 text-center text-slate-600">{t('emptyLog')}</td></tr>
-            ) : qsos.map((qso, index) => (
-              <tr key={`${qso.time}-${index}`}>
-                <td className="text-slate-500">{new Date(qso.time * 1000).toISOString().substring(11, 19)}</td>
-                <td className="font-semibold text-slate-100">{qso.call}</td>
-                <td className="text-slate-300">{qso.exch1}</td>
-                <td className="text-slate-300">{qso.exch2}</td>
-                <td className="text-slate-400">{qso.pfx}</td>
-                <td className={`text-right font-semibold ${qso.err === '   ' ? 'text-emerald-400' : 'text-red-400'}`}>{qso.err.trim()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

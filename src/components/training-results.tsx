@@ -21,7 +21,7 @@ export function TrainingResults({ contest, settings, qsos, startedAt }: Training
         type="button"
         disabled={disabled}
         onClick={() => downloadAdif({ contest: contest.id, settings, qsos, startedAt })}
-        className="btn px-3 py-1 text-[11px]"
+        className="rounded border border-slate-700 px-3 py-1 hover:bg-slate-800 disabled:opacity-40"
       >
         {t('exportAdif')}
       </button>
@@ -29,7 +29,7 @@ export function TrainingResults({ contest, settings, qsos, startedAt }: Training
         type="button"
         disabled={disabled}
         onClick={() => downloadCabrillo({ contest: contest.id, settings, qsos, startedAt })}
-        className="btn px-3 py-1 text-[11px]"
+        className="rounded border border-slate-700 px-3 py-1 hover:bg-slate-800 disabled:opacity-40"
       >
         {t('exportCabrillo')}
       </button>
