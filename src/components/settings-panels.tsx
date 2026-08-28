@@ -29,7 +29,7 @@ export function StationPanel({ settings, volume, onSettingsChange, onVolumeChang
   const { t } = useTranslation();
 
   return (
-    <section className="rounded-lg border border-slate-800 bg-slate-900 p-4">
+    <section className="rounded-lg border border-slate-800 bg-slate-900 p-3 sm:p-4">
       <h2 className="mb-3 font-semibold">{t('station')}</h2>
       <label className="block text-sm">
         {t('callsign')}
@@ -37,7 +37,7 @@ export function StationPanel({ settings, volume, onSettingsChange, onVolumeChang
           value={settings.call}
           autoCapitalize="characters"
           onChange={(event) => onSettingsChange({ call: event.target.value.toUpperCase().replace(/[^A-Z0-9/]/g, '') })}
-          className="mt-1 w-full rounded bg-slate-950 px-3 py-2 font-mono uppercase"
+          className="mt-1 w-full min-h-11 rounded bg-slate-950 px-3 py-2 font-mono uppercase"
         />
       </label>
       {NUMERIC_SETTINGS.map(({ key, labelKey, unit, min, max, step }) => (
@@ -81,14 +81,14 @@ export function ContestSettingsPanel({
   const { t } = useTranslation();
 
   return (
-    <section className="rounded-lg border border-slate-800 bg-slate-900 p-4">
+    <section className="rounded-lg border border-slate-800 bg-slate-900 p-3 sm:p-4">
       <h2 className="mb-3 font-semibold">{t('contest')}</h2>
       <label className="block text-sm">
         {t('contestType')}
         <select
           value={contest}
           onChange={(event) => onContestChange(event.target.value as ContestId)}
-          className="mt-1 w-full rounded bg-slate-950 px-3 py-2 text-sm"
+          className="mt-1 w-full min-h-11 rounded bg-slate-950 px-3 py-2 text-sm"
         >
           {CONTEST_LIST.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
         </select>

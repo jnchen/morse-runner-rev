@@ -38,6 +38,7 @@ export default function App() {
   const [historyCount, setHistoryCount] = useState(0);
   const startedAtRef = useRef(new Date());
   const [history, setHistory] = useState<TrainingResult[]>([]);
+  const [mobilePanel, setMobilePanel] = useState<'log' | 'settings'>('log');
 
   const schedulerRef = useRef<AudioScheduler | null>(null);
   const engineRef = useRef<ContestEngine | null>(null);
@@ -309,8 +310,8 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100" onKeyDown={onFormKeyDown}>
-      <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/95 px-4 py-3 backdrop-blur sm:px-6">
+    <div className="min-h-[100dvh] bg-slate-950 text-slate-100" onKeyDown={onFormKeyDown}>
+      <header className="sticky top-0 z-30 border-b border-slate-800 bg-slate-950/95 px-3 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] backdrop-blur sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold sm:text-xl">{t('title')}</h1>
@@ -320,7 +321,7 @@ export default function App() {
             <span className={`rounded px-2 py-1 text-xs ${running ? 'bg-emerald-600' : 'bg-slate-800 text-slate-400'}`}>
               {running ? `${t(engine.runMode)} · ${pileup}` : t('idle')}
             </span>
-            <select aria-label={t('language')} value={i18n.language.slice(0, 2)} onChange={(e) => { const language = e.target.value; void i18n.changeLanguage(language); setSettings({ language }); }} className="rounded border border-slate-700 bg-slate-900 px-2 py-1 text-sm">
+            <select aria-label={t('language')} value={i18n.language.slice(0, 2)} onChange={(e) => { const language = e.target.value; void i18n.changeLanguage(language); setSettings({ language }); }} className="min-h-11 rounded border border-slate-700 bg-slate-900 px-3 py-2 text-sm">
               <option value="en">English</option>
               <option value="zh">中文</option>
               <option value="ja">日本語</option>
@@ -329,15 +330,15 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-7xl gap-4 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <main className="mx-auto grid max-w-7xl gap-4 p-3 pb-[calc(env(safe-area-inset-bottom,0px)+9.5rem)] sm:p-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:p-6 lg:pb-6">
         <section className="space-y-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             {MODES.map((mode) => (
-              <button key={mode} disabled={running} onClick={() => void startRun(mode)} className="rounded bg-emerald-600 px-3 py-2 text-sm font-medium transition hover:bg-emerald-500 disabled:opacity-40">
+              <button key={mode} disabled={running} onClick={() => void startRun(mode)} className="min-h-11 rounded bg-emerald-600 px-3 py-2 text-sm font-medium transition hover:bg-emerald-500 active:bg-emerald-500 disabled:opacity-40">
                 {t(mode)}
               </button>
             ))}
-            {running && <button onClick={stopRun} className="rounded bg-red-600 px-3 py-2 text-sm font-medium hover:bg-red-500">{t('stop')}</button>}
+            {running && <button onClick={stopRun} className="min-h-11 rounded bg-red-600 px-3 py-2 text-sm font-medium hover:bg-red-500 active:bg-red-400 sm:col-auto">{t('stop')}</button>}
           </div>
 
           <div className="rounded-lg border border-slate-800 bg-slate-900 p-3 shadow sm:p-4">
@@ -369,16 +370,37 @@ export default function App() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="hidden gap-2 lg:grid lg:grid-cols-4">
             {[['F1 · CQ', sendCq], ['F2 · NR', sendNr], ['F3 · TU', sendTu], ['F5 · HIS', sendHisCall], ['F8 · NIL', () => engine.send('nil')], ['F9 · AGN', () => engine.send('agn')]].map(([label, action]) => (
               <button key={label as string} onClick={action as () => void} className="rounded border border-slate-800 bg-slate-900 px-3 py-2 text-sm hover:bg-slate-800">{label as string}</button>
             ))}
           </div>
 
-          <QsoLog contestDefinition={contestDefinition} qsos={qsoList} />
+          <div className={mobilePanel === 'settings' ? 'hidden lg:block' : ''}>
+            <QsoLog contestDefinition={contestDefinition} qsos={qsoList} />
+          </div>
         </section>
 
-        <aside className="space-y-4">
+        <div className="mt-1 grid grid-cols-2 gap-2 rounded-lg border border-slate-800 bg-slate-900 p-1 lg:hidden">
+          <button
+            type="button"
+            aria-pressed={mobilePanel === 'log'}
+            onClick={() => setMobilePanel('log')}
+            className={`min-h-11 rounded px-3 py-2 text-sm font-medium transition ${mobilePanel === 'log' ? 'bg-emerald-600 text-slate-950' : 'text-slate-300 hover:bg-slate-800'}`}
+          >
+            {t('log')}
+          </button>
+          <button
+            type="button"
+            aria-pressed={mobilePanel === 'settings'}
+            onClick={() => setMobilePanel('settings')}
+            className={`min-h-11 rounded px-3 py-2 text-sm font-medium transition ${mobilePanel === 'log' ? 'bg-emerald-600 text-slate-950' : 'text-slate-300 hover:bg-slate-800'}`}
+          >
+            {t('settings')}
+          </button>
+        </div>
+
+        <aside className={`space-y-4 min-w-0 ${mobilePanel === 'settings' ? '' : 'hidden lg:block'}`}>
           <StationPanel settings={settings} volume={volume} onSettingsChange={setSettings} onVolumeChange={setVolume} />
           <ContestSettingsPanel
             settings={settings}

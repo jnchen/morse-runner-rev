@@ -12,7 +12,7 @@ export function ContestDefinitionPanel({ contest, settings, onSettingsChange }: 
   const { t } = useTranslation();
 
   return (
-    <section className="rounded-lg border border-slate-800 bg-slate-900 p-4">
+    <section className="rounded-lg border border-slate-800 bg-slate-900 p-3 sm:p-4">
       <h2 className="mb-3 font-semibold">{t('contestExchange')}</h2>
       <div className="grid gap-2">
         {contest.fields.map((field) => (
@@ -25,7 +25,7 @@ export function ContestDefinitionPanel({ contest, settings, onSettingsChange }: 
                   ? { exchange1: event.target.value.toUpperCase() }
                   : { exchange2: event.target.value.toUpperCase() },
               )}
-              className="mt-1 w-full rounded bg-slate-950 px-3 py-2 font-mono uppercase"
+              className="mt-1 w-full min-h-11 rounded bg-slate-950 px-3 py-2 font-mono uppercase"
             />
           </label>
         ))}

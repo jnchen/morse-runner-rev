@@ -15,10 +15,12 @@ export function MobileActionBar({
 }: MobileActionBarProps) {
   const { t } = useTranslation();
 
-  const actions = [
-    { label: t('sendCq'), action: onCq, primary: true },
-    { label: t('sendExchange'), action: onExchange, primary: true },
-    { label: t('sendTuAndSave'), action: onTuAndSave, primary: true },
+  const primaryActions = [
+    { label: t('sendCq'), action: onCq },
+    { label: t('sendExchange'), action: onExchange },
+    { label: t('sendTuAndSave'), action: onTuAndSave },
+  ];
+  const secondaryActions = [
     { label: t('sendHisCall'), action: onHisCall },
     { label: 'NIL', action: onNil },
     { label: 'AGN', action: onAgn },
@@ -26,19 +28,36 @@ export function MobileActionBar({
   ];
 
   return (
-    <div className="sticky bottom-0 z-10 border-t border-slate-800 bg-slate-950/95 p-2 backdrop-blur lg:hidden">
-      <div className="grid grid-cols-4 gap-2">
-        {actions.map(({ label, action, primary }) => (
-          <button
-            key={label}
-            type="button"
-            onClick={action}
-            className={`rounded px-2 py-3 text-sm font-medium ${primary ? 'bg-emerald-600 hover:bg-emerald-500' : 'border border-slate-700 bg-slate-900 hover:bg-slate-800'} ${label === t('abort') ? 'col-span-4' : ''}`}
-          >
-            {label}
-          </button>
-        ))}
+    <nav
+      aria-label={t('messages')}
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-800 bg-slate-950/95 pb-[calc(env(safe-area-inset-bottom,0px)+0.5rem)] backdrop-blur lg:hidden"
+    >
+      <div className="mx-auto max-w-3xl space-y-2 px-2 pt-2">
+        <div className="grid grid-cols-3 gap-2">
+          {primaryActions.map(({ label, action }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={action}
+              className="min-h-11 rounded bg-emerald-600 px-2 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-500 active:bg-emerald-400"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          {secondaryActions.map(({ label, action }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={action}
+              className="min-h-11 rounded border border-slate-700 bg-slate-900 px-1 py-2 text-sm font-medium transition hover:bg-slate-800 active:bg-slate-800"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </nav>
   );
 }
