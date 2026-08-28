@@ -20,6 +20,12 @@ This implementation is under active development and currently covers:
 - English, Chinese, and Japanese UI
 - Installable offline-capable PWA
 
+## Online version
+
+The latest `master` build is deployed automatically to GitHub Pages:
+
+<https://jnchen.github.io/morse-runner-rev/>
+
 ## Local-first policy
 
 The application does not require an account, backend, or network access. Settings and imported data remain in the browser.
