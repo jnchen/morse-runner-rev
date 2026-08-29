@@ -20,6 +20,24 @@ This implementation is under active development and currently covers:
 - English, Chinese, and Japanese UI
 - Installable offline-capable PWA
 
+## References and acknowledgements
+
+This project is an independent TypeScript implementation, but its behavior and contest coverage were developed by studying the public MorseRunner family of programs. In particular:
+
+- [MorseRunner by Alex Shovkoplyas, VE3NEA](https://github.com/VE3NEA/MorseRunner) — the original CW contest simulator, including its core pileup/HST behavior, `MASTER.DTA` call-list format, operator flow, and keyboard model.
+- [Morse Runner Community Edition by W7SST and contributors](https://github.com/w7sst/MorseRunner) — Community Edition contest support, N1MM-style call-history behavior, and documentation for CWT, Field Day, NAQP, CQ WW, ARRL DX, SST, JARL ALL JA/ACAG, and IARU HF.
+- [BH1SCW's MorseRunner branch](https://github.com/BH1SCW/MorseRunner) — Unicode and export-related enhancements referenced by the Community Edition history.
+- [F6FVY's MorseRunner branch](https://github.com/f6fvy/MorseRunner) — caller-flow and RIT/callsign-lookup improvements referenced by the Community Edition history.
+- [N2IC's MorseRunner branch](https://github.com/N2IC/MorseRunner) — CQ WW support and integration-related fixes referenced by the Community Edition history.
+- [JR8PPG's MorseRunnerJA branch](https://github.com/JR8PPG/MorseRunner) — JARL ALL JA and ACAG contest behavior.
+- [zmetzing's Linux port](https://github.com/zmetzing/MorseRunner) — evidence that the original 1.68 simulation model could be ported beyond Delphi/Windows.
+
+Thanks to VE3NEA for creating MorseRunner and to all Morse Runner maintainers,
+contest developers, testers, and CW operators who documented its behavior over
+the years. Their released programs and public notes were used as behavioral
+references; this repository does not redistribute their source code or data
+files.
+
 ## Online version
 
 The latest `master` build is deployed automatically to GitHub Pages:

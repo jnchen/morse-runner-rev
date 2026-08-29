@@ -50,6 +50,8 @@ export default function App() {
   const exch1Ref = useRef<HTMLInputElement>(null);
   const exch2Ref = useRef<HTMLInputElement>(null);
 
+  const contestDefinition = CONTESTS[settings.contest];
+  const firstExchangeIsRst = contestDefinition.fields[0]?.type === 'rst';
   const engine = useMemo(() => new ContestEngine(useGameStore.getState().settings, {
     stateChanged: () => {
       const e = engineRef.current;
@@ -70,33 +72,55 @@ export default function App() {
     return () => scheduler.stop();
   }, []);
 
+  const fillDefaultRst = useCallback(() => {
+    if (firstExchangeIsRst && !useGameStore.getState().exch1) {
+      setExchange({ exch1: '599' });
+    }
+  }, [firstExchangeIsRst, setExchange]);
+
+  // MorseRunner skips an empty RST field, fills 599, and advances to the next field.
   const focusExchange = useCallback(() => {
     const active = document.activeElement;
     if (active === callRef.current) {
-      exch1Ref.current?.focus();
+      if (firstExchangeIsRst) {
+        fillDefaultRst();
+        exch2Ref.current?.focus();
+      } else {
+        exch1Ref.current?.focus();
+      }
     } else if (active === exch1Ref.current) {
       exch2Ref.current?.focus();
     } else if (active === exch2Ref.current || !callRef.current?.value) {
       callRef.current?.focus();
-    } else exch1Ref.current?.focus();
-  }, [setExchange]);
+    } else if (firstExchangeIsRst) {
+      callRef.current?.focus();
+    } else {
+      exch1Ref.current?.focus();
+    }
+  }, [fillDefaultRst, firstExchangeIsRst]);
 
   const sendCq = useCallback(() => { callSent.current = false; nrSent.current = false; engine.send('cq'); }, [engine]);
   const sendHisCall = useCallback(() => {
+    fillDefaultRst();
     const current = useGameStore.getState().call.toUpperCase();
     if (current) engine.me.hisCall = current;
     callSent.current = true;
     engine.send('hisCall');
-  }, [engine]);
-  const sendNr = useCallback(() => { nrSent.current = true; engine.send('nr'); }, [engine]);
+  }, [engine, fillDefaultRst]);
+  const sendNr = useCallback(() => {
+    fillDefaultRst();
+    nrSent.current = true;
+    engine.send('nr');
+  }, [engine, fillDefaultRst]);
   const sendTu = useCallback(() => engine.send('tu'), [engine]);
 
   const saveQso = useCallback(() => {
+    const myExchange = engine.myExchange();
     const state = useGameStore.getState();
     const saved = engine.saveQso({
       call: state.call.toUpperCase(),
-      exch1: state.exch1 || engine.myExchange().exch1,
-      exch2: state.exch2 || engine.myExchange().exch2,
+      exch1: state.exch1 || (firstExchangeIsRst ? '599' : myExchange.exch1),
+      exch2: state.exch2 || myExchange.exch2,
     });
     if (!saved) {
       callRef.current?.focus();
@@ -106,7 +130,7 @@ export default function App() {
     nrSent.current = false;
     setExchange({ call: '', exch1: '', exch2: '' });
     callRef.current?.focus();
-  }, [engine, setExchange]);
+  }, [engine, firstExchangeIsRst, setExchange]);
 
   const processEnter = useCallback(() => {
     if (eventModifiers()) { saveQso(); return; }
@@ -291,8 +315,6 @@ export default function App() {
       .catch(() => undefined);
     return () => { cancelled = true; };
   }, [engine, settings.contest]);
-
-    const contestDefinition = CONTESTS[settings.contest];
 
   const changeContest = (contest: ContestId) => {
     const definition = CONTESTS[contest];
