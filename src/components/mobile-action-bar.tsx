@@ -30,7 +30,7 @@ export function MobileActionBar({
   return (
     <nav
       aria-label={t('messages')}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-800 bg-slate-950/95 pb-[calc(env(safe-area-inset-bottom,0px)+0.5rem)] backdrop-blur lg:hidden"
+      className="shrink-0 border-t border-slate-800 bg-slate-950/95 pb-[calc(env(safe-area-inset-bottom,0px)+0.5rem)] backdrop-blur lg:hidden"
     >
       <div className="mx-auto max-w-3xl space-y-2 px-2 pt-2">
         <div className="grid grid-cols-3 gap-2">

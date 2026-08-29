@@ -310,8 +310,8 @@ export default function App() {
 
 
   return (
-    <div className="min-h-[100dvh] bg-slate-950 text-slate-100" onKeyDown={onFormKeyDown}>
-      <header className="sticky top-0 z-30 border-b border-slate-800 bg-slate-950/95 px-3 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] backdrop-blur sm:px-6">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-100 lg:block lg:min-h-[100dvh] lg:h-auto lg:overflow-visible" onKeyDown={onFormKeyDown}>
+      <header className="shrink-0 border-b border-slate-800 bg-slate-950/95 px-3 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] backdrop-blur sm:px-6 lg:sticky lg:top-0 lg:z-30">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold sm:text-xl">{t('title')}</h1>
@@ -330,8 +330,8 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-7xl gap-4 p-3 pb-[calc(env(safe-area-inset-bottom,0px)+9.5rem)] sm:p-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:p-6 lg:pb-6">
-        <section className="space-y-4">
+      <main className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col gap-4 overflow-y-auto p-3 pb-4 sm:p-4 sm:pb-4 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:overflow-visible lg:p-6 lg:pb-6">
+        <section className="flex shrink-0 flex-col gap-4">
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             {MODES.map((mode) => (
               <button key={mode} disabled={running} onClick={() => void startRun(mode)} className="min-h-11 rounded bg-emerald-600 px-3 py-2 text-sm font-medium transition hover:bg-emerald-500 active:bg-emerald-500 disabled:opacity-40">
@@ -340,6 +340,20 @@ export default function App() {
             ))}
             {running && <button onClick={stopRun} className="min-h-11 rounded bg-red-600 px-3 py-2 text-sm font-medium hover:bg-red-500 active:bg-red-400 sm:col-auto">{t('stop')}</button>}
           </div>
+
+          <label className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 p-3 text-sm lg:hidden">
+            <span className="shrink-0 font-medium text-slate-300">{t('myCallsign')}</span>
+            <input
+              value={settings.call}
+              autoCapitalize="characters"
+              autoComplete="off"
+              spellCheck={false}
+              enterKeyHint="done"
+              onChange={(event) => setSettings({ call: event.target.value.toUpperCase().replace(/[^A-Z0-9/]/g, '') })}
+              placeholder={t('callsign')}
+              className="min-w-0 flex-1 min-h-11 rounded border border-slate-800 bg-slate-950 px-3 py-2 font-mono text-base uppercase outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40"
+            />
+          </label>
 
           <div className="rounded-lg border border-slate-800 bg-slate-900 p-3 shadow sm:p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-400">
@@ -381,7 +395,7 @@ export default function App() {
           </div>
         </section>
 
-        <div className="mt-1 grid grid-cols-2 gap-2 rounded-lg border border-slate-800 bg-slate-900 p-1 lg:hidden">
+        <div className="grid shrink-0 grid-cols-2 gap-2 rounded-lg border border-slate-800 bg-slate-900 p-1 lg:hidden">
           <button
             type="button"
             aria-pressed={mobilePanel === 'log'}
@@ -394,13 +408,13 @@ export default function App() {
             type="button"
             aria-pressed={mobilePanel === 'settings'}
             onClick={() => setMobilePanel('settings')}
-            className={`min-h-11 rounded px-3 py-2 text-sm font-medium transition ${mobilePanel === 'log' ? 'bg-emerald-600 text-slate-950' : 'text-slate-300 hover:bg-slate-800'}`}
+            className={`min-h-11 rounded px-3 py-2 text-sm font-medium transition ${mobilePanel === 'settings' ? 'bg-emerald-600 text-slate-950' : 'text-slate-300 hover:bg-slate-800'}`}
           >
             {t('settings')}
           </button>
         </div>
 
-        <aside className={`space-y-4 min-w-0 ${mobilePanel === 'settings' ? '' : 'hidden lg:block'}`}>
+        <aside className={`min-w-0 shrink-0 space-y-4 ${mobilePanel === 'settings' ? '' : 'hidden lg:block'}`}>
           <StationPanel settings={settings} volume={volume} onSettingsChange={setSettings} onVolumeChange={setVolume} />
           <ContestSettingsPanel
             settings={settings}
