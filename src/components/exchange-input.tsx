@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { NormalizedInput } from './inputs/normalized-input';
+import { normalizeCallsign, normalizeExchange } from './inputs/normalize';
 import type { ContestDefinition } from '../engine/contest-defs';
 
 interface ExchangeInputProps {
@@ -16,6 +18,8 @@ interface ExchangeInputProps {
   onClear: () => void;
 }
 
+const inputClassName = 'w-full min-w-0 min-h-12 rounded border border-slate-800 bg-slate-950 px-3 py-3 font-mono text-lg uppercase outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40';
+
 export function ExchangeInput({
   contestDefinition, call, exch1, exch2, callRef, exch1Ref, exch2Ref,
   onCallChange, onExch1Change, onExch2Change, onSave, onClear,
@@ -26,39 +30,45 @@ export function ExchangeInput({
 
   return (
     <div>
-      <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(3.25rem,minmax(0,0.8fr))] gap-2 sm:grid-cols-[minmax(0,2fr)_minmax(0,0.8fr)_minmax(0,1fr)]">
-        <input
+      <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,0.8fr))] gap-2 sm:grid-cols-[minmax(0,2fr)_minmax(0,0.8fr)_minmax(0,1fr)]">
+        <NormalizedInput
           ref={callRef}
           value={call}
+          normalize={normalizeCallsign}
+          onValueChange={onCallChange}
           inputMode="text"
           autoCapitalize="characters"
           autoComplete="off"
+          autoCorrect="off"
           spellCheck={false}
-          onChange={(event) => onCallChange(event.target.value.toUpperCase().replace(/[^A-Z0-9/?]/g, ''))}
           placeholder={t('call')}
-          className="min-h-12 rounded border border-slate-800 bg-slate-950 px-3 py-3 font-mono text-lg uppercase outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40"
+          className={inputClassName}
         />
-        <input
+        <NormalizedInput
           ref={exch1Ref}
           value={exch1}
+          normalize={(value) => normalizeExchange(value, 12)}
+          onValueChange={onExch1Change}
           inputMode="text"
           autoCapitalize="characters"
           autoComplete="off"
+          autoCorrect="off"
           spellCheck={false}
-          onChange={(event) => onExch1Change(event.target.value.toUpperCase().replace(/[^A-Z0-9 /.]/g, '').slice(0, 12))}
           placeholder={t(field1?.labelKey ?? 'exchange')}
-          className="min-h-12 rounded border border-slate-800 bg-slate-950 px-2 py-3 text-center font-mono uppercase outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40"
+          className={`${inputClassName} px-2 text-center`}
         />
-        <input
+        <NormalizedInput
           ref={exch2Ref}
           value={exch2}
+          normalize={(value) => normalizeExchange(value, 16)}
+          onValueChange={onExch2Change}
           inputMode="text"
           autoCapitalize="characters"
           autoComplete="off"
+          autoCorrect="off"
           spellCheck={false}
-          onChange={(event) => onExch2Change(event.target.value.toUpperCase().replace(/[^A-Z0-9 /.]/g, '').slice(0, 16))}
           placeholder={t(field2?.labelKey ?? 'exchange')}
-          className="col-span-2 min-h-12 rounded border border-slate-800 bg-slate-950 px-3 py-3 text-center font-mono uppercase outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40 sm:col-span-1"
+          className={`${inputClassName} col-span-2 sm:col-span-1`}
         />
       </div>
       <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] gap-2">

@@ -6,6 +6,8 @@ import { TrainingHistory } from './components/training-history';
 import { CallDataPanels } from './components/call-data-panels';
 import { ContestDefinitionPanel } from './components/contest-definition-panel';
 import { MobileActionBar } from './components/mobile-action-bar';
+import { NormalizedInput } from './components/inputs/normalized-input';
+import { normalizeStationCallsign } from './components/inputs/normalize';
 import { TrainingResults } from './components/training-results';
 import { ContestSettingsPanel, StationPanel } from './components/settings-panels';
 import { AudioScheduler } from './engine/audio-scheduler';
@@ -343,13 +345,15 @@ export default function App() {
 
           <label className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 p-3 text-sm lg:hidden">
             <span className="shrink-0 font-medium text-slate-300">{t('myCallsign')}</span>
-            <input
+            <NormalizedInput
               value={settings.call}
+              normalize={normalizeStationCallsign}
+              onValueChange={(value) => setSettings({ call: value })}
               autoCapitalize="characters"
               autoComplete="off"
+              autoCorrect="off"
               spellCheck={false}
               enterKeyHint="done"
-              onChange={(event) => setSettings({ call: event.target.value.toUpperCase().replace(/[^A-Z0-9/]/g, '') })}
               placeholder={t('callsign')}
               className="min-w-0 flex-1 min-h-11 rounded border border-slate-800 bg-slate-950 px-3 py-2 font-mono text-base uppercase outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40"
             />

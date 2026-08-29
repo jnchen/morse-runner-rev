@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { NormalizedInput } from './inputs/normalized-input';
+import { normalizeStationCallsign } from './inputs/normalize';
 import { CONTEST_LIST, type ContestId } from '../engine/contest-defs';
 import type { UserSettings } from '../types';
 import { Range } from './ui/range';
@@ -33,10 +35,14 @@ export function StationPanel({ settings, volume, onSettingsChange, onVolumeChang
       <h2 className="mb-3 font-semibold">{t('station')}</h2>
       <label className="block text-sm">
         {t('callsign')}
-        <input
+        <NormalizedInput
           value={settings.call}
+          normalize={normalizeStationCallsign}
+          onValueChange={(value) => onSettingsChange({ call: value })}
           autoCapitalize="characters"
-          onChange={(event) => onSettingsChange({ call: event.target.value.toUpperCase().replace(/[^A-Z0-9/]/g, '') })}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
           className="mt-1 w-full min-h-11 rounded bg-slate-950 px-3 py-2 font-mono uppercase"
         />
       </label>
