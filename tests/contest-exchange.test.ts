@@ -56,6 +56,25 @@ describe('contest exchange model', () => {
     expect(bad?.err).toBe('NIL');
   });
 
+  it('attaches a likely completed station to a miscopied NIL for review', () => {
+    const e = new ContestEngine(settings('cwt'), events);
+    e.start('single');
+    e.addCaller();
+    const station = e.stations.at(-1)!;
+    station.myCall = 'W4LN';
+    station.oper.state = 'done';
+    station.exch1 = 'Ward';
+    station.exch2 = 'N0AX';
+    const saved = e.saveQso({ call: 'W4LM', exch1: 'WARO', exch2: 'W0' });
+    expect(saved).toMatchObject({
+      err: 'NIL',
+      trueCall: 'W4LN',
+      trueExch1: 'Ward',
+      trueExch2: 'N0AX',
+    });
+    expect(e.stations).not.toContain(station);
+  });
+
   it('backfills a deferred dynamic exchange and reports EX2', () => {
     const e = new ContestEngine(settings('cwt'), events);
     vi.spyOn(Math, 'random').mockImplementation(() => 0);

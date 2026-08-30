@@ -132,6 +132,40 @@ export class ContestEngine {
     this.stations = this.stations.filter((s) => s !== station);
   }
 
+  /**
+   * A NIL is usually a one or two character callsign miscopy, not a missing
+   * station. Keep the completed station attached to the log entry so the review
+   * UI can show and replay what was actually sent.
+   */
+  private findCompletedStation(copiedCall: string): DxStation | null {
+    const normalizeCall = (value: string) => value.replace(/\?/g, '').trim().toUpperCase();
+    const wanted = normalizeCall(copiedCall);
+    const candidates = this.stations.filter((station): station is DxStation =>
+      station instanceof DxStation && station.oper.state === 'done');
+
+    let best: DxStation | null = null;
+    let bestDistance = Number.MAX_SAFE_INTEGER;
+    for (const station of candidates) {
+      const distance = callsignEditDistance(wanted, normalizeCall(station.myCall));
+      if (distance < bestDistance) {
+        best = station;
+        bestDistance = distance;
+      }
+    }
+
+    const tolerance = Math.max(1, Math.floor(wanted.length / 4));
+    return bestDistance <= tolerance ? best : null;
+  }
+
+  private attachActual(qso: Qso, station: DxStation) {
+    qso.trueCall = station.myCall;
+    qso.trueRst = station.rst;
+    qso.trueNr = station.nr;
+    qso.trueExch1 = station.exch1;
+    qso.trueExch2 = station.exch2;
+    this.removeStation(station);
+  }
+
   addCaller() {
     const record = this.callHistory.pick();
     const st = new DxStation(this.ctx, this, () => this.callList.pick(this.runMode === 'hst'), record);
@@ -189,16 +223,10 @@ export class ContestEngine {
     // Reproduce deferred QSO verification: a station can finish after the operator logs it.
     const last = this.qsoList[this.qsoList.length - 1];
     if (last && !last.trueCall) {
-      const finished = this.stations.find((s): s is DxStation =>
-        s instanceof DxStation && s.oper.state === 'done' && s.myCall === last.call);
+      const finished = this.findCompletedStation(last.call);
       if (finished) {
-        last.trueCall = finished.myCall;
-        last.trueRst = finished.rst;
-        last.trueNr = finished.nr;
-        last.trueExch1 = finished.exch1;
-        last.trueExch2 = finished.exch2;
+        this.attachActual(last, finished);
         last.err = this.qsoError(last);
-        this.removeStation(finished);
         this.events.stateChanged();
       }
     }
@@ -306,16 +334,8 @@ export class ContestEngine {
       err: 'NIL',
     };
     qso.dupe = this.qsoList.some((q) => q.call === qso.call && q.err === VERIFIED);
-    const station = this.stations.find((s): s is DxStation =>
-      s instanceof DxStation && s.oper.state === 'done' && s.myCall === qso.call);
-    if (station) {
-      qso.trueCall = station.myCall;
-      qso.trueRst = station.rst;
-      qso.trueNr = station.nr;
-      qso.trueExch1 = station.exch1;
-      qso.trueExch2 = station.exch2;
-      this.removeStation(station);
-    }
+    const station = this.findCompletedStation(qso.call);
+    if (station) this.attachActual(qso, station);
     qso.err = !qso.trueCall ? 'NIL' : this.qsoError(qso);
     this.qsoList.push(qso);
     this.logs.push(qso);
@@ -327,6 +347,7 @@ export class ContestEngine {
 
   private qsoError(qso: Qso): string {
     if (!qso.trueCall) return 'NIL';
+    if (qso.call.replace(/\?/g, '').toUpperCase() !== qso.trueCall.replace(/\?/g, '').toUpperCase()) return 'NIL';
     if (qso.dupe) return 'DUP';
     for (const field of this.contestDefinition.fields) {
       const actual = field.key === 'exch1' ? qso.trueExch1 : qso.trueExch2;
@@ -361,6 +382,21 @@ export class ContestEngine {
     const numeric = Number(value);
     return Number.isFinite(numeric) ? numeric : 0;
   }
+}
+
+function callsignEditDistance(a: string, b: string): number {
+  const matrix = Array.from({ length: a.length + 1 }, (_, index) => [index, ...Array<number>(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+  }
+  return matrix[a.length][b.length];
 }
 
 export function contestStats(qsos: Qso[], contestId: ContestId, runMode: RunMode): ContestStats {
