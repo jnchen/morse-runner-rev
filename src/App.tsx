@@ -7,6 +7,7 @@ import { CallDataPanels } from './components/call-data-panels';
 import { ContestDefinitionPanel } from './components/contest-definition-panel';
 import { MobileActionBar } from './components/mobile-action-bar';
 import { NormalizedInput } from './components/inputs/normalized-input';
+import { useMobileVisualViewport } from './hooks/use-mobile-visual-viewport';
 import { normalizeStationCallsign } from './components/inputs/normalize';
 import { TrainingResults } from './components/training-results';
 import { ContestSettingsPanel, StationPanel } from './components/settings-panels';
@@ -21,6 +22,7 @@ import type { RunMode } from './types';
 const MODES: RunMode[] = ['pileup', 'single', 'wpx', 'hst'];
 
 export default function App() {
+  useMobileVisualViewport();
   const { t, i18n } = useTranslation();
   const settings = useGameStore((s) => s.settings);
   const setSettings = useGameStore((s) => s.setSettings);
@@ -334,7 +336,7 @@ export default function App() {
 
 
   return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-100 lg:block lg:min-h-[100dvh] lg:h-auto lg:overflow-visible" onKeyDown={onFormKeyDown}>
+    <div className="fixed inset-x-0 top-0 flex h-[var(--app-visible-height,100dvh)] flex-col overflow-hidden bg-slate-950 text-slate-100 lg:static lg:block lg:min-h-[100dvh] lg:h-auto lg:overflow-visible" onKeyDown={onFormKeyDown}>
       <header className="shrink-0 border-b border-slate-800 bg-slate-950/95 px-3 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] backdrop-blur sm:px-6 lg:sticky lg:top-0 lg:z-30">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
           <div>
@@ -417,7 +419,7 @@ export default function App() {
           </div>
 
           <div className={mobilePanel === 'settings' ? 'hidden lg:block' : ''}>
-            <QsoLog contestDefinition={contestDefinition} qsos={qsoList} />
+            <QsoLog contestDefinition={contestDefinition} qsos={qsoList} reviewWpm={settings.wpm} reviewFrequency={settings.pitch} reviewVolume={volume} />
           </div>
         </section>
 

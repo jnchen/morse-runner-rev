@@ -38,6 +38,7 @@ export function MobileActionBar({
             <button
               key={label}
               type="button"
+              onPointerDown={(event) => event.preventDefault()}
               onClick={action}
               className="min-h-11 rounded bg-emerald-600 px-2 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-500 active:bg-emerald-400"
             >
@@ -50,6 +51,7 @@ export function MobileActionBar({
             <button
               key={label}
               type="button"
+              onPointerDown={(event) => event.preventDefault()}
               onClick={action}
               className="min-h-11 rounded border border-slate-700 bg-slate-900 px-1 py-2 text-sm font-medium transition hover:bg-slate-800 active:bg-slate-800"
             >
