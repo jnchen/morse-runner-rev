@@ -6,9 +6,7 @@ import { TrainingHistory } from './components/training-history';
 import { CallDataPanels } from './components/call-data-panels';
 import { ContestDefinitionPanel } from './components/contest-definition-panel';
 import { MobileActionBar } from './components/mobile-action-bar';
-import { NormalizedInput } from './components/inputs/normalized-input';
 import { useMobileVisualViewport } from './hooks/use-mobile-visual-viewport';
-import { normalizeStationCallsign } from './components/inputs/normalize';
 import { TrainingResults } from './components/training-results';
 import { ContestSettingsPanel, StationPanel } from './components/settings-panels';
 import { AudioScheduler } from './engine/audio-scheduler';
@@ -367,21 +365,6 @@ export default function App() {
             {running && <button onClick={stopRun} className="min-h-11 rounded bg-red-600 px-3 py-2 text-sm font-medium hover:bg-red-500 active:bg-red-400 sm:col-auto">{t('stop')}</button>}
           </div>
 
-          <label className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 p-3 text-sm lg:hidden">
-            <span className="shrink-0 font-medium text-slate-300">{t('myCallsign')}</span>
-            <NormalizedInput
-              value={settings.call}
-              normalize={normalizeStationCallsign}
-              onValueChange={(value) => setSettings({ call: value })}
-              autoCapitalize="characters"
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck={false}
-              enterKeyHint="done"
-              placeholder={t('callsign')}
-              className="min-w-0 flex-1 min-h-11 rounded border border-slate-800 bg-slate-950 px-3 py-2 font-mono text-base uppercase outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/40"
-            />
-          </label>
 
           <div className="rounded-lg border border-slate-800 bg-slate-900 p-3 shadow sm:p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-400">
