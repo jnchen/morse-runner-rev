@@ -37,22 +37,10 @@ button {
     scroll-margin-bottom: 0.5rem;
   }
 
-  /* Small screens cannot fit all three fields and the action bar above an iOS
-     keyboard. Promote the focused field to a full-width row so its value and
-     caret remain visible without horizontal scrolling. */
-  html[data-keyboard-open='true'] .exchange-grid > [data-keyboard-focus='call'] {
-    grid-column: 1 / -1;
-  }
-
-  html[data-keyboard-open='true'] .exchange-grid > [data-keyboard-focus='rst'] {
-    grid-column: 1 / -1;
-  }
-
-  html[data-keyboard-open='true'] .exchange-grid > [data-keyboard-focus='nr'] {
-    grid-column: 1 / -1;
-  }
-
+  /* The contest entry stays on one row. While the keyboard is open, the bottom
+     action bar already provides TU+SAVE, so the duplicate form buttons are not
+     worth a second content row. */
   html[data-keyboard-open='true'] .exchange-actions {
-    margin-top: 0.5rem;
+    display: none !important;
   }
 }

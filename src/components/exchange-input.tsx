@@ -30,7 +30,7 @@ export function ExchangeInput({
 
   return (
     <div>
-      <div className="exchange-grid grid grid-cols-[minmax(0,1.8fr)_minmax(0,0.8fr))] gap-2 sm:grid-cols-[minmax(0,2fr)_minmax(0,0.8fr)_minmax(0,1fr)]">
+      <div className="exchange-grid grid grid-cols-[minmax(0,1fr)_4rem_4.5rem] gap-2">
         <NormalizedInput
           ref={callRef}
           value={call}
@@ -71,7 +71,7 @@ export function ExchangeInput({
           spellCheck={false}
           placeholder={t(field2?.labelKey ?? 'exchange')}
           data-exchange-field="nr"
-          className={`${inputClassName} col-span-2 sm:col-span-1`}
+          className={`${inputClassName} px-2 text-center`}
         />
       </div>
       <div className="exchange-actions mt-3 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
