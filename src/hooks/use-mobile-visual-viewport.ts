@@ -13,6 +13,8 @@ export function useMobileVisualViewport() {
     let frame = 0;
 
     const clear = () => {
+      document.activeElement?.removeAttribute?.('data-keyboard-focus');
+      root.style.removeProperty('--app-visible-top');
       root.style.removeProperty('--app-visible-height');
       root.dataset.keyboardOpen = 'false';
     };
@@ -29,11 +31,17 @@ export function useMobileVisualViewport() {
 
         const keyboardInset = Math.max(0, window.innerHeight - viewport.height);
         if (keyboardInset > 24) {
+          root.style.setProperty('--app-visible-top', `${Math.max(0, viewport.offsetTop)}px`);
           root.style.setProperty('--app-visible-height', `${viewport.height}px`);
           root.dataset.keyboardOpen = 'true';
           const active = document.activeElement;
-          if (active instanceof HTMLElement) active.scrollIntoView({ block: 'nearest' });
+          if (active instanceof HTMLElement) {
+            active.setAttribute('data-keyboard-focus', active.dataset.exchangeField ?? 'other');
+            active.scrollIntoView({ block: 'center' });
+            requestAnimationFrame(() => active.scrollIntoView({ block: 'center' }));
+          }
         } else {
+          document.activeElement?.removeAttribute?.('data-keyboard-focus');
           clear();
         }
       });
@@ -44,6 +52,7 @@ export function useMobileVisualViewport() {
     window.visualViewport?.addEventListener('scroll', sync);
     window.addEventListener('resize', sync);
     window.addEventListener('orientationchange', sync);
+    document.addEventListener('focusin', sync);
     mobile.addEventListener('change', sync);
 
     return () => {
@@ -52,6 +61,7 @@ export function useMobileVisualViewport() {
       window.visualViewport?.removeEventListener('scroll', sync);
       window.removeEventListener('resize', sync);
       window.removeEventListener('orientationchange', sync);
+      document.removeEventListener('focusin', sync);
       mobile.removeEventListener('change', sync);
       clear();
     };

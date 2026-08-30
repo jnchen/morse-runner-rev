@@ -30,7 +30,7 @@ export function ExchangeInput({
 
   return (
     <div>
-      <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,0.8fr))] gap-2 sm:grid-cols-[minmax(0,2fr)_minmax(0,0.8fr)_minmax(0,1fr)]">
+      <div className="exchange-grid grid grid-cols-[minmax(0,1.8fr)_minmax(0,0.8fr))] gap-2 sm:grid-cols-[minmax(0,2fr)_minmax(0,0.8fr)_minmax(0,1fr)]">
         <NormalizedInput
           ref={callRef}
           value={call}
@@ -42,6 +42,7 @@ export function ExchangeInput({
           autoCorrect="off"
           spellCheck={false}
           placeholder={t('call')}
+          data-exchange-field="call"
           className={inputClassName}
         />
         <NormalizedInput
@@ -55,6 +56,7 @@ export function ExchangeInput({
           autoCorrect="off"
           spellCheck={false}
           placeholder={t(field1?.labelKey ?? 'exchange')}
+          data-exchange-field="rst"
           className={`${inputClassName} px-2 text-center`}
         />
         <NormalizedInput
@@ -68,10 +70,11 @@ export function ExchangeInput({
           autoCorrect="off"
           spellCheck={false}
           placeholder={t(field2?.labelKey ?? 'exchange')}
+          data-exchange-field="nr"
           className={`${inputClassName} col-span-2 sm:col-span-1`}
         />
       </div>
-      <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+      <div className="exchange-actions mt-3 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
         <button type="button" onClick={onSave} className="min-h-11 rounded bg-emerald-600 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-500 active:bg-emerald-400">{t('save')}</button>
         <button type="button" onClick={onClear} className="min-h-11 rounded border border-slate-700 px-4 py-2 text-sm hover:bg-slate-800 active:bg-slate-800">{t('clear')}</button>
       </div>

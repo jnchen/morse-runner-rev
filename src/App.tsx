@@ -334,8 +334,8 @@ export default function App() {
 
 
   return (
-    <div className="fixed inset-x-0 top-0 flex h-[var(--app-visible-height,100dvh)] flex-col overflow-hidden bg-slate-950 text-slate-100 lg:static lg:block lg:min-h-[100dvh] lg:h-auto lg:overflow-visible" onKeyDown={onFormKeyDown}>
-      <header className="shrink-0 border-b border-slate-800 bg-slate-950/95 px-3 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] backdrop-blur sm:px-6 lg:sticky lg:top-0 lg:z-30">
+    <div className="fixed inset-x-0 top-[var(--app-visible-top,0px)] flex h-[var(--app-visible-height,100dvh)] flex-col overflow-hidden bg-slate-950 text-slate-100 lg:static lg:block lg:min-h-[100dvh] lg:h-auto lg:overflow-visible" onKeyDown={onFormKeyDown}>
+      <header className="shrink-0 border-b border-slate-800 bg-slate-950/95 px-3 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] backdrop-blur hide-with-keyboard sm:px-6 lg:sticky lg:top-0 lg:z-30">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold sm:text-xl">{t('title')}</h1>
@@ -356,7 +356,7 @@ export default function App() {
 
       <main className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col gap-4 overflow-y-auto p-3 pb-4 sm:p-4 sm:pb-4 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:overflow-visible lg:p-6 lg:pb-6">
         <section className="flex shrink-0 flex-col gap-4">
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+          <div className="hide-with-keyboard grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             {MODES.map((mode) => (
               <button key={mode} disabled={running} onClick={() => void startRun(mode)} className="min-h-11 rounded bg-emerald-600 px-3 py-2 text-sm font-medium transition hover:bg-emerald-500 active:bg-emerald-500 disabled:opacity-40">
                 {t(mode)}
