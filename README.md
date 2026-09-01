@@ -1,5 +1,7 @@
 # Morse Runner Web
 
+English · [简体中文](README_cn.md)
+
 A modern, standalone, cross-platform CW contest trainer inspired by MorseRunner.
 Desktop and mobile browsers are both supported. The app can be installed as a PWA and remains fully usable offline. All training and settings data stay local.
 
